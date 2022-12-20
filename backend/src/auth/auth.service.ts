@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import * as dotenv from 'dotenv';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { usePool } from '../utils/db';
 
 dotenv.config();
@@ -12,7 +12,7 @@ export interface AuthToken {
 
 @Injectable()
 export class AuthService {
-    async GenerateAuthToken(email: string, plaintext_password: string): Promise<AuthToken | string>{
+    async GenerateAuthToken(email: string, plaintext_password: string): Promise<AuthToken>{
 
     const pool = await usePool();
     const sql = "SELECT user_id, pw_hash FROM users WHERE email=$1";
@@ -26,13 +26,14 @@ export class AuthService {
             if(await bcrypt.compare(plaintext_password, row.pw_hash)){
                 return { token: jwt.sign(row, AUTH_SECRET) };
             } else {
-                return "Invalid Password";
+                throw new UnauthorizedException("Invalid Password");
             }
         } else {
-            return "Invalid Email Address";
+            throw new UnauthorizedException("Invalid Email Address");
         }
     } catch(e) {
         console.log(e);
+        throw (e instanceof HttpException) ? e : new InternalServerErrorException();
     }
 
     }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Body, Controller, InternalServerErrorException, Post } from '@nestjs/common';
 import { AuthService, AuthToken } from './auth.service';
 
 @Controller('auth')
@@ -7,7 +7,9 @@ export class AuthController {
     @Post('')
     async GenerateAuthToken(
         @Body() {email, plaintext_password}: { email: string, plaintext_password: string }
-    ): Promise<AuthToken | string> {
-        return this.authService.GenerateAuthToken(email, plaintext_password);
+    ): Promise<AuthToken> {
+        if(!(email && plaintext_password)) throw new BadRequestException();
+        const result = this.authService.GenerateAuthToken(email, plaintext_password);
+        return result;
     }
 }
