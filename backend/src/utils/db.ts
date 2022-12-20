@@ -1,8 +1,8 @@
-import { Pool } from "pg";
-import dotenv from "dotenv"
+import { Pool } from "pg"
+import * as dotenv from "dotenv"
 dotenv.config();
 
-export const getPool = async (): Promise<Pool> => {
+export const usePool = async (): Promise<Pool> => {
     try {
         const pool = new Pool({
             user: process.env.PGUSER,
