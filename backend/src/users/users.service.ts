@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import User from '../models/User';
-import { getAllUsers } from '../repositories/Users';
+import { User } from './users.models';
+import { getAllUsers } from './users.repository';
 
 @Injectable()
-export class UserService {
+export class UsersService {
     async getUsers(): Promise<User[]> {
         return await getAllUsers();
     }

@@ -1,5 +1,5 @@
 import { usePool } from "../utils/db";
-import User from "../models/User";
+import { User } from "./users.models";
 
 export const getAllUsers = async (): Promise<User[]> => {
     const pool = await usePool();
