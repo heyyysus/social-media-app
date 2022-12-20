@@ -24,7 +24,7 @@ export class AuthService {
         if(res.rowCount === 1) {
             const row: {user_id: string, pw_hash: string} = res.rows[0];
             if(await bcrypt.compare(plaintext_password, row.pw_hash)){
-                return { token: jwt.sign(row, AUTH_SECRET) };
+                return { token: jwt.sign(row.user_id, AUTH_SECRET) };
             } else {
                 throw new UnauthorizedException("Invalid Password");
             }
