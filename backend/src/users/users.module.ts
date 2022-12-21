@@ -3,16 +3,13 @@ import { MiddlewareConsumer } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { RequireAuthentication } from '../auth/auth.middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user.entity';
 
 @Module({
+    imports: [TypeOrmModule.forFeature([User])],
     controllers: [UsersController],
     providers: [UsersService],
 })
-export class UsersModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(RequireAuthentication)
-            .forRoutes({ path: "api/users", method: RequestMethod.GET });
-    }
+export class UsersModule {
 }
