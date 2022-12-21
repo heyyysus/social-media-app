@@ -1,4 +1,5 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, Post, Query } from '@nestjs/common'
+import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, Post, Query, UseGuards } from '@nestjs/common'
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { QueryFailedError } from 'typeorm';
 import { User } from './user.entity';
 import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService } from './users.service';
@@ -7,6 +8,7 @@ import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
+    @UseGuards(JwtAuthGuard)
     @Get('')
     async getUsers(): Promise<User[]> {
         const users = await this.usersService.getUsers();
