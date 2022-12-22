@@ -1,5 +1,8 @@
 import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, Post, Query, UseGuards } from '@nestjs/common'
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 import { QueryFailedError } from 'typeorm';
 import { User } from './user.entity';
 import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService } from './users.service';
@@ -8,7 +11,8 @@ import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
     @Get('')
     async getUsers(): Promise<User[]> {
         const users = await this.usersService.getUsers();
@@ -17,12 +21,12 @@ export class UsersController {
 
     @Post('')
     async createUser(
-        @Body() { email, handle, plaintext_password }: {email: string, handle: string, plaintext_password: string}
+        @Body() { email, handle, password }: {email: string, handle: string, password: string}
     ): Promise<User> {
-        if(!(email && handle && plaintext_password)) throw new BadRequestException("Form data missing");
+        if(!(email && handle && password)) throw new BadRequestException("Form data missing");
 
         try {
-            return await this.usersService.createUser({ email, handle, plaintext_password });
+            return await this.usersService.createUser({ email, handle, password });
         } catch(e) {
             console.log(e);
             if(e instanceof EmailAlreadyExistsException) throw new ConflictException("Email already exists");

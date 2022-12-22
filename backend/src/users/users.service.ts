@@ -20,7 +20,7 @@ export class UsersService {
         return this.usersRepository.find();
     }
 
-    async createUser({ email, handle, plaintext_password }): Promise<User> {
+    async createUser({ email, handle, password }): Promise<User> {
 
         const checkExistingEmailQuery = await this.usersRepository.findBy({ email: email });
         if(checkExistingEmailQuery.length > 0) throw new EmailAlreadyExistsException();
@@ -29,7 +29,7 @@ export class UsersService {
         if(checkExistingHandleQuery.length > 0) throw new HandleAlreadyExistsException();
         
         try {
-            const hash = await bcrypt.hash(plaintext_password, 10);
+            const hash = await bcrypt.hash(password, 10);
             const newUser = this.usersRepository.create({
                 email: email, 
                 handle: handle, 

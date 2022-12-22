@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
+import { Role } from "./enums/role.enum";
 
 dotenv.config();
 
@@ -23,6 +24,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     const user = await this.userRepository.findOne({ where: { user_id: payload.sub } });
     if(user) return user;
-    return { user_id: payload.sub, email: payload.email };
+    return { user_id: payload.sub, email: payload.email, role: Role.USER };
   }
 }
