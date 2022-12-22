@@ -43,6 +43,10 @@ export class UsersService {
         }
     }
 
+    async getUserByHandle(handle: string): Promise<User> {
+        return await this.usersRepository.findOne({ where: { handle: handle } });
+    }
+
     // async createUser(
     //     {email, handle, plaintext_password}: {email: string, handle: string, plaintext_password: string} 
     // ): Promise<User> {

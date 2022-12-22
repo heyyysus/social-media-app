@@ -1,9 +1,8 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, Post, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, NotFoundException, Post, Query, UseGuards } from '@nestjs/common'
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { QueryFailedError } from 'typeorm';
 import { User } from './user.entity';
 import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService } from './users.service';
 
@@ -17,6 +16,15 @@ export class UsersController {
     async getUsers(): Promise<User[]> {
         const users = await this.usersService.getUsers();
         return users;
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.USER)
+    @Get('findByHandle')
+    async getUserByHandle(@Query('handle') handle): Promise<User> {
+        const user = await this.usersService.getUserByHandle(handle);
+        if(!user) throw new NotFoundException();
+        return user;
     }
 
     @Post('')
