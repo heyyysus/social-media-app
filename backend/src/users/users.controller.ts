@@ -19,9 +19,9 @@ export class UsersController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.USER)
+    @Roles(Role.USER, Role.ADMIN)
     @Get('findByHandle')
-    async getUserByHandle(@Query('handle') handle): Promise<User> {
+    async getUserByHandle(@Query('handle') handle: string): Promise<User> {
         const user = await this.usersService.getUserByHandle(handle);
         if(!user) throw new NotFoundException();
         return user;

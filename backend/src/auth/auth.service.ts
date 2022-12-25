@@ -24,14 +24,13 @@ export class AuthService {
     ){};
 
     async validateUser(email: string, plaintext_password: string): Promise<any> {
-        const AUTH_SECRET = process.env.AUTHSECRET;
 
         try {
             console.log(`email: ${email}, pw: ${plaintext_password}`);
             const res = await this.usersRepository.findOne({ 
                 where: { email: email },
                 select: {
-                    user_id: {  },
+                    user_id: true,
                     pw_hash: true,
                 }
             });
@@ -53,7 +52,9 @@ export class AuthService {
     }
 
     async login(user: any) {
-        const payload = { email: user.email, sub: user.userId };
+        console.log(user);
+        const payload = { sub: user.user_id };
+        console.log(payload);
         return {
           access_token: this.jwtService.sign(payload),
         };

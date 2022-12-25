@@ -11,10 +11,9 @@ export class HandleAlreadyExistsException extends Error {};
 @Injectable()
 export class UsersService {
     
-    constructor(private dataSource: DataSource){}
-
-    @InjectRepository(User)
-    private usersRepository: Repository<User>;
+    constructor(
+        @InjectRepository(User) private usersRepository: Repository<User>,
+    ){}
 
     async getUsers(): Promise<User[]> {
         return this.usersRepository.find();
@@ -44,7 +43,13 @@ export class UsersService {
     }
 
     async getUserByHandle(handle: string): Promise<User> {
-        return await this.usersRepository.findOne({ where: { handle: handle } });
+        return await this.usersRepository.findOne(
+            { 
+                where: { handle: handle },
+                relations: {
+                    posts: true,
+                }
+            });
     }
 
     // async createUser(

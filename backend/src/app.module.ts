@@ -7,6 +7,9 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { PostsController } from './posts/posts.controller';
+import { PostsModule } from './posts/posts.module';
+import { EPost } from "./posts/epost.entity";
 
 dotenv.config();
 
@@ -18,13 +21,14 @@ const ormConfig: PostgresConnectionOptions = {
   password: process.env.PGPASSWORD,
   port: parseInt(process.env.PGPORT),
   synchronize: (process.env.PRODUCTION) ? false : true,
-  entities: [User],
+  entities: [User, EPost],
 };
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
+    PostsModule,
     TypeOrmModule.forRoot(ormConfig),
   ],
   controllers: [],

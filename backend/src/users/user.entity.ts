@@ -1,10 +1,20 @@
+import { EPost } from '../posts/epost.entity';
 import { Role } from 'src/auth/enums/role.enum';
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { 
+    Entity, 
+    Column,
+    PrimaryGeneratedColumn, 
+    Unique, 
+    OneToMany, 
+    CreateDateColumn, 
+    UpdateDateColumn, 
+    DeleteDateColumn 
+} from 'typeorm';
 
 @Entity({ name: "User" })
 export class User {
     @PrimaryGeneratedColumn()
-    user_id: Number;
+    user_id: number;
 
     @Column({ unique: true })
     email: string;
@@ -21,5 +31,17 @@ export class User {
         default: Role.USER
     })
     role: Role;
+
+    @OneToMany(() => EPost, post => post.user)
+    posts: EPost[];
+
+    @CreateDateColumn()
+    createdDate: Date;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
+
+    @DeleteDateColumn()
+    deletedDate: Date;
     
 }
