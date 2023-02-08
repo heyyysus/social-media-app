@@ -10,6 +10,8 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
 import { EPost } from "./posts/epost.entity";
+import { OpenAIService } from './openai/openai.service';
+import { OpenaiModule } from './openai/openai.module';
 
 dotenv.config();
 
@@ -30,8 +32,9 @@ const ormConfig: PostgresConnectionOptions = {
     AuthModule,
     PostsModule,
     TypeOrmModule.forRoot(ormConfig),
+    OpenaiModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [OpenAIService],
 })
 export class AppModule {}
