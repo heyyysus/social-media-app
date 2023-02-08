@@ -12,6 +12,7 @@ import { PostsModule } from './posts/posts.module';
 import { EPost } from "./posts/epost.entity";
 import { OpenAIService } from './openai/openai.service';
 import { OpenaiModule } from './openai/openai.module';
+import { FakeNameModule } from './fake-name/fake-name.module';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ const ormConfig: PostgresConnectionOptions = {
     PostsModule,
     TypeOrmModule.forRoot(ormConfig),
     OpenaiModule,
+    FakeNameModule,
   ],
   controllers: [],
   providers: [OpenAIService],

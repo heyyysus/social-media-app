@@ -12,7 +12,7 @@ export class OpenAIService {
 
     private openai = new OpenAIApi(this.openai_api_configuration);
     
-    async complete_text(prompt: string, max_tokens: number, temperature=0.7, model="text-davinci-003"){
+    async complete_text(prompt: string, max_tokens: number, model="text-curie-001", temperature=0.7){
         const compReq: CreateCompletionRequest = {
             model: model, 
             prompt: prompt, 
@@ -22,5 +22,7 @@ export class OpenAIService {
         const response = await this.openai.createCompletion(compReq);
         return response.data;
     }
+
+    
     
 }
