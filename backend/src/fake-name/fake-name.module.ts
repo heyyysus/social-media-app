@@ -4,6 +4,7 @@ import { FakeNameController } from './fake-name.controller';
 
 @Module({
   providers: [FakeNameService],
-  controllers: [FakeNameController]
+  controllers: [FakeNameController],
+  exports: [FakeNameService]
 })
 export class FakeNameModule {}

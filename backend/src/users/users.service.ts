@@ -3,6 +3,8 @@ import { ConflictException, Injectable, InternalServerErrorException } from '@ne
 import { User } from './user.entity';
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
+import { FakeNameService, Identity } from "src/fake-name/fake-name.service";
+import { randomInt } from "crypto";
 
 
 export class EmailAlreadyExistsException extends Error {};
@@ -13,7 +15,19 @@ export class UsersService {
     
     constructor(
         @InjectRepository(User) private usersRepository: Repository<User>,
+        private readonly fakeNameService: FakeNameService,
     ){}
+
+    async createFakeUsers(quantity: number) {
+        const identity_promises: Promise<Identity>[] = [];
+        for(var i = 0; i < quantity; ++i){
+            const gender = (randomInt(2) === 0) ? "male" : "female";
+            const region = "english-united-states";
+            identity_promises.push(this.fakeNameService.fetch_identity(region, gender))
+        }
+        const identities = await Promise.all(identity_promises);
+        
+    }
 
     async getUsers(): Promise<User[]> {
         return this.usersRepository.find();

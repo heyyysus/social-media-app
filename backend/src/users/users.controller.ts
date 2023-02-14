@@ -12,6 +12,13 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
+    @Post('createFakeUsers')
+    async createFakeUsers(@Body() { quantity }: {quantity: number}){
+        
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.ADMIN)
     @Get('')
     async getUsers(): Promise<User[]> {
         const users = await this.usersService.getUsers();
