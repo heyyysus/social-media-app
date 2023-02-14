@@ -26,7 +26,6 @@ export class AuthService {
     async validateUser(email: string, plaintext_password: string): Promise<any> {
 
         try {
-            console.log(`email: ${email}, pw: ${plaintext_password}`);
             const res = await this.usersRepository.findOne({ 
                 where: { email: email },
                 select: {

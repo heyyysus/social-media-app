@@ -1,4 +1,4 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, NotFoundException, Post, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, NotFoundException, Post, Query, Req, UseGuards } from '@nestjs/common'
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -16,6 +16,13 @@ export class UsersController {
     async getUsers(): Promise<User[]> {
         const users = await this.usersService.getUsers();
         return users;
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    @Get('local')
+    async getLocalUser(@Req() req: any): Promise<User> {
+        return req.user;
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
