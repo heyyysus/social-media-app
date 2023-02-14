@@ -4,7 +4,7 @@ import { LoginForm } from '../components/LoginForm';
 import { Authenticate } from '../util/api';
 
 export interface LoginPageProps {
-    setSession: React.Dispatch<React.SetStateAction<Session | undefined>>
+    setSession: React.Dispatch<React.SetStateAction<Session | null>>
 };
 
 export const LoginPage: FC<LoginPageProps> =  ({ setSession }) => {

@@ -1,28 +1,35 @@
-import { FC } from 'react';
-import { IUser } from '../util/api';
+import { FC, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Session } from '../App';
+import { Post } from '../components/Post';
+import { GetFeed, IUser } from '../util/api';
+import "../styles/Home.css";
 
 export interface HomePageProps {
     localUser: IUser | null,
+    session: Session | null,
 };
 
-export const HomePage: FC<HomePageProps> =  ({ localUser }) => {
+export const HomePage: FC<HomePageProps> =  ({ localUser, session }) => {
+
+    const [feed, setFeed] = useState<any[]>([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(session)
+            GetFeed(session)
+                .then(feed => setFeed(feed));
+        else
+            navigate('/login');
+
+    }, [session])
+
     return (
     <div>
-        <h2>Home</h2>
-        <p>Local User: </p>
-        <table>
-            <tr>
-                <th>user_id </th>
-                <th>{localUser?.user_id}</th>
-            </tr>
-            <tr>
-                <th>email </th>
-                <th>{localUser?.email}</th>
-            </tr>
-            <tr>
-                <th>handle </th>
-                <th>{localUser?.handle}</th>
-            </tr>
-        </table>
+        <p>Welcome {localUser?.handle},</p>
+        {feed.map((e, i) => {
+            return(<Post key={i} data={e} />)
+        })}
+        
     </div>);
 };

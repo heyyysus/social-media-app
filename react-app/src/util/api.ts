@@ -13,12 +13,36 @@ export interface IUser {
     deletedDate: Date,
 };
 
-export const GetLocalUser = async ({ access_token }: Session): Promise<IUser | null> => {
+export interface IPost {
+    post_id: number,
+    body: string,
+    createdDate: Date,
+    deletedDate: Date,
+    updatedDate: Date, 
+    user: IUser,
+}
+
+const GenerateConfig = ({ access_token }: Session) => {
     const config: AxiosRequestConfig = {
         headers: {
             "Authorization": `Bearer ${access_token}`
         }
     };
+    return config;
+}
+
+export const GetFeed = async ({ access_token }: Session): Promise<IPost[]> => {
+    const config = GenerateConfig({ access_token });
+    const response = await axios.get(`${API_URL}/api/posts`, config);
+    console.log(response);
+    if(response.status === 200)
+        return response.data;
+    else
+        return [];
+}
+
+export const GetLocalUser = async ({ access_token }: Session): Promise<IUser | null> => {
+    const config = GenerateConfig({ access_token });
     const response = await axios.get(`${API_URL}/api/users/local`, config);
     if(response.status === 200)
         return response.data;

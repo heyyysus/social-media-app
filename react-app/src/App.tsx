@@ -15,7 +15,7 @@ export interface Session {
 
 function App() {
 
-  const [ session, setSession ] = useState<Session | undefined>(undefined);
+  const [ session, setSession ] = useState<Session | null>(null);
   const [ localUser, setLocalUser ] = useState<IUser | null>(null);
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ function App() {
         <Navbar />
         <main className="container">
           <Routes>
-            <Route path='/' element={ <HomePage localUser={localUser} /> }></Route>
+            <Route path='/' element={ <HomePage localUser={localUser} session={session} /> }></Route>
             <Route path='/login' element={ <LoginPage setSession={setSession} /> }></Route>
           </Routes>
         </main>
