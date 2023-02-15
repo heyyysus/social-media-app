@@ -31,7 +31,7 @@ export const HomePage: FC<HomePageProps> =  ({ localUser, session }) => {
     const HandlePostCreate = async (postCreationBody: PostCreationBody) => {
         if(session){
             const createdPost = await CreatePost(session, postCreationBody);
-            if(createdPost) UpdateFeed();
+            UpdateFeed();
         }
     }
 

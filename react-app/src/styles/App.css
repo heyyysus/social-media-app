@@ -4,4 +4,5 @@
 
 .container {
     overflow: scroll;
+    width: 60vw;
 }

@@ -14,7 +14,7 @@ export class PostsService {
 
     async getAll(): Promise<EPost[]> {
         return await this.postsRepository.find({
-            relations: { user: true },
+            relations: { user: true, likes: true },
             order: {
                 createdDate: "DESC",
             }
@@ -23,7 +23,8 @@ export class PostsService {
 
     async getById(id: number): Promise<EPost> {
         return await this.postsRepository.findOne({
-            where: { post_id: id }
+            where: { post_id: id },
+            relations: { likes: true }
         });
     }
 
@@ -46,6 +47,35 @@ export class PostsService {
         catch(e){
             console.log(e);
             throw e;
+        }
+    }
+
+    async like(id: number, user: User,): Promise<EPost | null> {
+        try {
+            const oldPost: EPost = await this.postsRepository.findOne({
+                where: {
+                    post_id: id
+                },
+                relations: {
+                    likes: true,
+                }
+            });
+            if(!oldPost) return null;
+
+            if(oldPost.likes.some(u => {
+                return u.user_id === user.user_id;
+            })) return oldPost;
+
+            oldPost.likes.push(user);
+
+            const newPost = await this.postsRepository.save(oldPost);      
+            
+            return newPost;
+
+
+        } catch(e){
+            console.log(e);
+            return null;
         }
     }
 }

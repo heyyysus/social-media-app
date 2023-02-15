@@ -13,12 +13,19 @@ export const PostCreationForm: FC<PostCreationFormProps> =  ({ handlePostCreatio
 
     const bodyRef = useRef<any>();
 
+    const CheckBody = (body: string) => {
+        return body.length <= 240;
+    }
+
     const handleSubmit: FormEventHandler = (event) => {
         event.preventDefault()
 
         const body: string = bodyRef.current.value;
 
-        handlePostCreation({ body });
+        if(CheckBody(body)){
+            handlePostCreation({ body });
+            bodyRef.current.value = "";
+        }
     }
 
     return (

@@ -4,7 +4,10 @@ import {
     CreateDateColumn, 
     DeleteDateColumn, 
     Entity, 
+    JoinTable, 
+    ManyToMany, 
     ManyToOne, 
+    OneToMany, 
     PrimaryGeneratedColumn, 
     UpdateDateColumn
 } from "typeorm";
@@ -29,4 +32,8 @@ export class EPost {
 
     @DeleteDateColumn()
     deletedDate: Date;
+
+    @ManyToMany((type) => User, (user) => user.posts)
+    @JoinTable()
+    likes: User[]
 }

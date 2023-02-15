@@ -53,4 +53,12 @@ export class PostsController {
             throw new InternalServerErrorException();
         }
     }
+
+    @Patch('/like')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    async like(@Query('id') id: number, @Req() req: any){
+        const user = req.user;
+        return this.postsService.like(id, user);
+    }
 }

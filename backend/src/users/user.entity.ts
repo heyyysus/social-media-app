@@ -8,7 +8,11 @@ import {
     OneToMany, 
     CreateDateColumn, 
     UpdateDateColumn, 
-    DeleteDateColumn 
+    DeleteDateColumn, 
+    ManyToMany,
+    JoinTable,
+    RelationCount,
+    ManyToOne
 } from 'typeorm';
 
 @Entity({ name: "User" })
@@ -44,4 +48,15 @@ export class User {
     @DeleteDateColumn()
     deletedDate: Date;
     
+    @ManyToMany((type) => EPost)
+    @JoinTable()
+    likes: EPost[]
+
+    @ManyToMany(type => User, user => user.following)
+    @JoinTable()
+    followers: User[];
+
+    @ManyToMany(type => User, user => user.followers)
+    following: User[];
+
 }
