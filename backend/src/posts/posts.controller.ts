@@ -12,7 +12,7 @@ export class PostsController {
 
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles(Role.ADMIN)
+    @Roles(Role.USER, Role.ADMIN)
     async getAll(): Promise<EPost[]>{
         return await this.postsService.getAll();
     }

@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Session } from '../App';
+import { RegistrationBody } from '../components/RegisterForm'
 
 const API_URL = "http://localhost:5000";
 
@@ -59,6 +60,20 @@ export const Authenticate = async (email: string, password: string): Promise<str
         const response = await axios.post(`${API_URL}/auth/login`, data);
         if(response.status === 201)
             return response.data.access_token;
+        else
+            return null;
+    } catch(e){
+        console.log(e);
+        return null;
+    }
+}
+
+export const Register = async (registrationBody: RegistrationBody): Promise<IUser | null> => {
+    try {
+        const response = await axios.post(`${API_URL}/api/users`, registrationBody);
+        console.log(response);
+        if(response.status === 201)
+            return response.data;
         else
             return null;
     } catch(e){

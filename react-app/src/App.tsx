@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 
 import "./styles/App.css";
 import { GetLocalUser, IUser } from './util/api';
+import { RegsiterPage } from './pages/Register';
 
 export interface Session {
   access_token: string,
@@ -18,6 +19,10 @@ function App() {
   const [ session, setSession ] = useState<Session | null>(null);
   const [ localUser, setLocalUser ] = useState<IUser | null>(null);
   const navigate = useNavigate();
+  const Logout = () => {
+    setSession(null);
+    setLocalUser(null);
+  }
 
   useEffect(()  => {
     if(session)
@@ -30,11 +35,12 @@ function App() {
 
   return (
       <div className="App">
-        <Navbar />
+        <Navbar localUser={localUser} LogoutCallback={Logout} />
         <main className="container">
           <Routes>
             <Route path='/' element={ <HomePage localUser={localUser} session={session} /> }></Route>
             <Route path='/login' element={ <LoginPage setSession={setSession} /> }></Route>
+            <Route path='/register' element={ <RegsiterPage setSession={setSession} /> }></Route>
           </Routes>
         </main>
       </div>
