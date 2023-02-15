@@ -16,6 +16,10 @@ export const HomePage: FC<HomePageProps> =  ({ localUser, session }) => {
     const [feed, setFeed] = useState<any[]>([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setInterval(UpdateFeed, 3000)
+    }, [])
+
     const UpdateFeed = () => {
         if(session)
             GetFeed(session)
