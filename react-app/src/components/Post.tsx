@@ -4,6 +4,7 @@ import { Button } from '../stories/Button';
 import { IPost, IUser, LikePost } from '../util/api';
 
 import "../styles/Post.css";
+import { Link } from 'react-router-dom';
 
 export interface  PostProps {
     data: IPost,
@@ -20,7 +21,7 @@ export const Post: FC<PostProps> =  ({ data, handleLike, handleUnlike, localUser
         <div className="card feed-post-card">
             <div className="card-body">
                 <p>{ data.body }</p>
-                <a style={{"color": "grey"}}>{ `@${data.user.handle}` }</a>
+                <Link to={`/u/${data.user.handle}`} style={{"color": "grey"}}>{ `@${data.user.handle}` }</Link>
                 <div className='action-menu'>
                     <div className='like-count'>{data.likes.length}</div>
                     <div className='like-button'>

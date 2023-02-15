@@ -8,6 +8,7 @@ import { Navbar } from './components/Navbar';
 import "./styles/App.css";
 import { GetLocalUser, IUser } from './util/api';
 import { RegsiterPage } from './pages/Register';
+import { UserProfilePage } from './pages/UserProfile';
 
 export interface Session {
   access_token: string,
@@ -41,6 +42,7 @@ function App() {
             <Route path='/' element={ <HomePage localUser={localUser} session={session} /> }></Route>
             <Route path='/login' element={ <LoginPage setSession={setSession} /> }></Route>
             <Route path='/register' element={ <RegsiterPage setSession={setSession} /> }></Route>
+            <Route path='/u/:handle' element={ <UserProfilePage session={session} /> }></Route>
           </Routes>
         </main>
       </div>
