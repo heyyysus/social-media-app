@@ -14,7 +14,10 @@ export class PostsService {
 
     async getAll(): Promise<EPost[]> {
         return await this.postsRepository.find({
-            relations: { user: true }
+            relations: { user: true },
+            order: {
+                createdDate: "DESC",
+            }
         });
     }
 

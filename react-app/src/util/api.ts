@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Session } from '../App';
+import { PostCreationBody } from '../components/PostCreationForm';
 import { RegistrationBody } from '../components/RegisterForm'
 
 const API_URL = "http://localhost:5000";
@@ -77,6 +78,22 @@ export const Register = async (registrationBody: RegistrationBody): Promise<IUse
         else
             return null;
     } catch(e){
+        console.log(e);
+        return null;
+    }
+}
+
+export const CreatePost = async (session: Session, postCreationBody: PostCreationBody): Promise<IPost | null> => {
+    const config = GenerateConfig(session);
+    try {
+        const response = await axios.post(`${API_URL}/api/posts`, postCreationBody, config);
+        console.log(response);
+        if(response.status === 201)
+            return response.data;
+        else
+            return null;
+    }
+    catch(e){
         console.log(e);
         return null;
     }
