@@ -61,4 +61,12 @@ export class PostsController {
         const user = req.user;
         return this.postsService.like(id, user);
     }
+
+    @Patch('/unlike')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    async unlike(@Query('id') id: number, @Req() req: any){
+        const user = req.user;
+        return this.postsService.unlike(id, user);
+    }
 }

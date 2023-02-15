@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, SaveOptions } from 'typeorm';
 import { EPost } from './epost.entity';
 
 export class UnauthorizedRequest extends Error {};
@@ -58,6 +58,7 @@ export class PostsService {
                 },
                 relations: {
                     likes: true,
+                    user: true,
                 }
             });
             if(!oldPost) return null;
@@ -70,7 +71,53 @@ export class PostsService {
 
             const newPost = await this.postsRepository.save(oldPost);      
             
-            return newPost;
+            return await this.postsRepository.findOne({
+                where:{
+                    post_id: newPost.post_id
+                },
+                relations: {
+                    user: true,
+                    likes: true,
+                }
+            });
+
+
+        } catch(e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    async unlike(id: number, user: User,): Promise<EPost | null> {
+        try {
+            const oldPost: EPost = await this.postsRepository.findOne({
+                where: {
+                    post_id: id
+                },
+                relations: {
+                    likes: true,
+                    user: true,
+                }
+            });
+            if(!oldPost) return null;
+
+            const newLikes = oldPost.likes.filter(u => {
+                return u.user_id !== user.user_id;
+            });
+
+            oldPost.likes = newLikes;
+
+            const newPost = await this.postsRepository.save(oldPost);      
+            
+            return await this.postsRepository.findOne({
+                where:{
+                    post_id: newPost.post_id
+                },
+                relations: {
+                    user: true,
+                    likes: true,
+                }
+            });
 
 
         } catch(e){

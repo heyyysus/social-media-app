@@ -22,6 +22,7 @@ export interface IPost {
     deletedDate: Date,
     updatedDate: Date, 
     user: IUser,
+    likes: IUser[],
 }
 
 const GenerateConfig = ({ access_token }: Session) => {
@@ -94,6 +95,36 @@ export const CreatePost = async (session: Session, postCreationBody: PostCreatio
             return null;
     }
     catch(e){
+        console.log(e);
+        return null;
+    }
+}
+
+export const LikePost = async (session: Session, id: number): Promise<IPost | null> => {
+    const config = GenerateConfig(session);
+    try {
+        const response = await axios.patch(`${API_URL}/api/posts/like`, null, {params: {id: id}, ... config});
+        console.log(response);
+        if(response.status === 200)
+            return response.data;
+        else 
+            return null;
+    } catch(e){
+        console.log(e);
+        return null;
+    }
+}
+
+export const UnlikePost = async (session: Session, id: number): Promise<IPost | null> => {
+    const config = GenerateConfig(session);
+    try {
+        const response = await axios.patch(`${API_URL}/api/posts/unlike`, null, {params: {id: id}, ... config});
+        console.log(response);
+        if(response.status === 200)
+            return response.data;
+        else 
+            return null;
+    } catch(e){
         console.log(e);
         return null;
     }

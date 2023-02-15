@@ -1,0 +1,12 @@
+.action-menu {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.like-count {
+    margin-right: 1.5vw;
+    margin-top: auto;
+    margin-bottom: auto;
+    color: grey;
+}
