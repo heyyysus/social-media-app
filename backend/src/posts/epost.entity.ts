@@ -33,7 +33,7 @@ export class EPost {
     @DeleteDateColumn()
     deletedDate: Date;
 
-    @ManyToMany((type) => User, (user) => user.posts)
+    @ManyToMany((type) => User, (user) => user.likes)
     @JoinTable()
     likes: User[]
 }

@@ -1,10 +1,10 @@
-import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, NotFoundException, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, ConflictException, Controller, Get, InternalServerErrorException, NotFoundException, Patch, Post, Query, Req, UseGuards } from '@nestjs/common'
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { User } from './user.entity';
-import { EmailAlreadyExistsException, HandleAlreadyExistsException, UsersService } from './users.service';
+import { EmailAlreadyExistsException, HandleAlreadyExistsException, UserNotFoundException, UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
@@ -22,7 +22,7 @@ export class UsersController {
     @Roles(Role.USER, Role.ADMIN)
     @Get('local')
     async getLocalUser(@Req() req: any): Promise<User> {
-        return req.user;
+        return await this.usersService.getUserById(req.user.user_id);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,6 +32,20 @@ export class UsersController {
         const user = await this.usersService.getUserByHandle(handle);
         if(!user) throw new NotFoundException();
         return user;
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    @Patch('action')
+    async action(@Req() req: any, @Query('id') id: number, @Query('action') action: "follow" | "unfollow"): Promise<User> {
+        const requestingUser: User = req.user;
+        try{
+            return await this.usersService.action(requestingUser, id, action);
+        } catch(e){
+            if(e instanceof UserNotFoundException)
+                throw new NotFoundException("User not found");
+            throw new InternalServerErrorException();
+        }
     }
 
     @Post('')

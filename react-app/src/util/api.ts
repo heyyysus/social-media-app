@@ -13,6 +13,9 @@ export interface IUser {
     updatedDate: Date,
     createdDate: Date,
     deletedDate: Date,
+    followers?: IUser[],
+    following?: IUser[],
+    likes?: IPost[],
 };
 
 export interface IPost {
@@ -130,7 +133,7 @@ export const UnlikePost = async (session: Session, id: number): Promise<IPost | 
     }
 }
 
-export const GetUserByHandle = async(session: Session, handle: string): Promise<IUser | null> => {
+export const GetUserByHandle = async (session: Session, handle: string): Promise<IUser | null> => {
     const config = GenerateConfig(session);
     try {
         const response = await axios.get(`${API_URL}/api/users/findByHandle`, {params: {handle: handle}, ... config});
@@ -138,6 +141,21 @@ export const GetUserByHandle = async(session: Session, handle: string): Promise<
         if(response.status === 200)
             return response.data;
         else
+            return null;
+    } catch(e){
+        console.log(e);
+        return null;
+    }
+}
+
+export const UserAction = async (session: Session, action: "follow" | "unfollow", id: number): Promise<IUser | null> => {
+    const config = GenerateConfig(session)
+    try {
+        const response = await axios.patch(`${API_URL}/api/users/action`, {params: {action: action, id: id}, ... config});
+        console.log(response);
+        if(response.status === 200){
+            return response.data;
+        } else 
             return null;
     } catch(e){
         console.log(e);

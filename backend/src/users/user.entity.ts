@@ -48,8 +48,7 @@ export class User {
     @DeleteDateColumn()
     deletedDate: Date;
     
-    @ManyToMany((type) => EPost)
-    @JoinTable()
+    @ManyToMany((type) => EPost, (post) => post.likes)
     likes: EPost[]
 
     @ManyToMany(type => User, user => user.following)

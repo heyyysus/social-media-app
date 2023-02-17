@@ -7,6 +7,7 @@ import { DataSource, Repository } from "typeorm";
 
 export class EmailAlreadyExistsException extends Error {};
 export class HandleAlreadyExistsException extends Error {};
+export class UserNotFoundException extends Error {};
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,18 @@ export class UsersService {
 
     async getUsers(): Promise<User[]> {
         return this.usersRepository.find();
+    }
+
+    async getUserById(id: number): Promise<User> {
+        return await this.usersRepository.findOne({
+            where: {
+                user_id: id,
+            },
+            relations: {
+                followers: true,
+                following: true,
+            }
+        });
     }
 
     async createUser({ email, handle, password }): Promise<User> {
@@ -48,8 +61,53 @@ export class UsersService {
                 where: { handle: handle },
                 relations: {
                     posts: true,
+                    followers: true,
+                    following: true,
                 }
             });
+    }
+
+    async action(requestingUser: User, id: number, action: "follow" | "unfollow"): Promise<User>{
+        try{
+            const oldUser = await this.usersRepository.findOne({
+                where: {
+                    user_id: id,
+                }, 
+                relations: {
+                    followers: true,
+                }
+            });
+
+            if(!oldUser) throw new UserNotFoundException();
+
+            switch(action){
+                case "follow":
+                    if(!oldUser.followers.some(f => f.user_id === requestingUser.user_id)){
+                        oldUser.followers.push(requestingUser);
+                        await this.usersRepository.save(oldUser);
+                    }
+                    break;
+                case "unfollow":
+                    const newFollowers = oldUser.followers.filter(f => f.user_id !== requestingUser.user_id)
+                    oldUser.followers = newFollowers;
+                    await this.usersRepository.save(oldUser);
+                    break;
+            }
+
+            return this.usersRepository.findOne({
+                where: {
+                    user_id: id,
+                },
+                relations: {
+                    followers: true,
+                    following: true,
+                    likes: true,
+                }
+            });
+
+        } catch(e) {
+            throw e;
+        }
     }
 
     // async createUser(
