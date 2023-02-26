@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd ./backed
+cd ./backend
 
 npm runs build
